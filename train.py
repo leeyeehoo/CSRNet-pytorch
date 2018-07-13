@@ -39,13 +39,15 @@ def main():
     best_prec1 = 1e6
     
     args = parser.parse_args()
-    
-    args.lr = 1e-9
+    args.original_lr = 1e-6
+    args.lr = 1e-6
     args.batch_size    = 1
     args.momentum      = 0.9
     args.decay         = 1e-4
     args.start_epoch   = 0
-    args.epochs = 200
+    args.epochs = 400
+    args.steps         = [-1,1,100,150]
+    args.scales        = [.01,100,1,1]
     args.workers = 4
     args.seed = time.time()
     args.print_freq = 30
@@ -73,7 +75,7 @@ def main():
             checkpoint = torch.load(args.pre)
             args.start_epoch = checkpoint['epoch']
             best_prec1 = checkpoint['best_prec1']
-            load_state_dict(checkpoint['state_dict'])
+            model.load_state_dict(checkpoint['state_dict'])
             optimizer.load_state_dict(checkpoint['optimizer'])
             print("=> loaded checkpoint '{}' (epoch {})"
                   .format(args.pre, checkpoint['epoch']))
@@ -116,7 +118,7 @@ def train(train_list, model, criterion, optimizer, epoch):
                        batch_size=args.batch_size,
                        num_workers=args.workers),
         batch_size=args.batch_size)
-    print('epoch %d, processed %d samples, lr %f' % (epoch, epoch * len(train_loader.dataset), args.lr))
+    print('epoch %d, processed %d samples, lr %.10f' % (epoch, epoch * len(train_loader.dataset), args.lr))
     
     model.train()
     end = time.time()
@@ -138,7 +140,6 @@ def train(train_list, model, criterion, optimizer, epoch):
         loss = criterion(output, target)
         
         losses.update(loss.item(), img.size(0))
-        
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()    
@@ -185,7 +186,21 @@ def validate(val_list, model, criterion):
         
 def adjust_learning_rate(optimizer, epoch):
     """Sets the learning rate to the initial LR decayed by 10 every 30 epochs"""
-    args.lr = args.lr * (0.1 ** (epoch // 200))
+    
+    
+    args.lr = args.original_lr
+    
+    for i in range(len(args.steps)):
+        
+        scale = args.scales[i] if i < len(args.scales) else 1
+        
+        
+        if epoch >= args.steps[i]:
+            args.lr = args.lr * scale
+            if epoch == args.steps[i]:
+                break
+        else:
+            break
     for param_group in optimizer.param_groups:
         param_group['lr'] = args.lr
         

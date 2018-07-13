@@ -12,9 +12,9 @@ def load_data(img_path,train = True):
     gt_file = h5py.File(gt_path)
     target = np.asarray(gt_file['density'])
     if train:
-        crop_size = (img.size[0]/4,img.size[1]/4)
-        dx = int(random.random()*img.size[0]*3./4)
-        dy = int(random.random()*img.size[1]*3./4)
+        crop_size = (img.size[0]/2,img.size[1]/2)
+        dx = int(random.random()*img.size[0]*1./2)
+        dy = int(random.random()*img.size[1]*1./2)
         img = img.crop((dx,dy,crop_size[0]+dx,crop_size[1]+dy))
         target = target[dy:crop_size[1]+dy,dx:crop_size[0]+dx]
     

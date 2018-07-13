@@ -9,7 +9,7 @@ from image import *
 class listDataset(Dataset):
     def __init__(self, root, shape=None, shuffle=True, transform=None,  train=False, seen=0, batch_size=1, num_workers=4):
         if train:
-            root = root *16
+            root = root *4
         random.shuffle(root)
         
         self.nSamples = len(root)
