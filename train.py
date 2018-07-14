@@ -47,7 +47,7 @@ def main():
     args.start_epoch   = 0
     args.epochs = 400
     args.steps         = [-1,1,100,150]
-    args.scales        = [.01,100,1,1]
+    args.scales        = [1,1,1,1]
     args.workers = 4
     args.seed = time.time()
     args.print_freq = 30
