@@ -5,6 +5,7 @@ import numpy as np
 from torch.utils.data import Dataset
 from PIL import Image
 from image import *
+import torchvision.transforms.functional as F
 
 class listDataset(Dataset):
     def __init__(self, root, shape=None, shuffle=True, transform=None,  train=False, seen=0, batch_size=1, num_workers=4):
@@ -31,6 +32,15 @@ class listDataset(Dataset):
         
         img,target = load_data(img_path,self.train)
         
-        if self.transform is not None:
-            img = self.transform(img)
+        img = 255.0 * F.to_tensor(img)
+        
+        img[0,:,:]=img[0,:,:]-92.8207477031
+        img[1,:,:]=img[1,:,:]-95.2757037428
+        img[2,:,:]=img[2,:,:]-104.877445883
+
+
+        
+        
+        #if self.transform is not None:
+        #    img = self.transform(img)
         return img,target

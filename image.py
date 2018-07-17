@@ -13,10 +13,21 @@ def load_data(img_path,train = True):
     target = np.asarray(gt_file['density'])
     if train:
         crop_size = (img.size[0]/2,img.size[1]/2)
-        dx = int(random.random()*img.size[0]*1./2)
-        dy = int(random.random()*img.size[1]*1./2)
+        if random.randint(0,9)<= -1:
+            
+            
+            dx = int(random.randint(0,1)*img.size[0]*1./2)
+            dy = int(random.randint(0,1)*img.size[1]*1./2)
+        else:
+            dx = int(random.random()*img.size[0]*1./2)
+            dy = int(random.random()*img.size[1]*1./2)
+        
+        
+        
         img = img.crop((dx,dy,crop_size[0]+dx,crop_size[1]+dy))
         target = target[dy:crop_size[1]+dy,dx:crop_size[0]+dx]
+    
+    
     
     
     target = cv2.resize(target,(target.shape[1]/8,target.shape[0]/8),interpolation = cv2.INTER_CUBIC)*64

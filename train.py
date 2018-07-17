@@ -32,6 +32,9 @@ parser.add_argument('--pre', '-p', metavar='PRETRAINED', default=None,type=str,
 parser.add_argument('gpu',metavar='GPU', type=str,
                     help='GPU id to use.')
 
+parser.add_argument('task',metavar='TASK', type=str,
+                    help='task id to use.')
+
 def main():
     
     global args,best_prec1
@@ -39,11 +42,11 @@ def main():
     best_prec1 = 1e6
     
     args = parser.parse_args()
-    args.original_lr = 1e-6
-    args.lr = 1e-6
+    args.original_lr = 1e-7
+    args.lr = 1e-7
     args.batch_size    = 1
     args.momentum      = 0.9
-    args.decay         = 1e-4
+    args.decay         = 5*1e-4
     args.start_epoch   = 0
     args.epochs = 400
     args.steps         = [-1,1,100,150]
@@ -91,13 +94,15 @@ def main():
         
         is_best = prec1 < best_prec1
         best_prec1 = min(prec1, best_prec1)
+        print(' * best MAE {mae:.3f} '
+              .format(mae=best_prec1))
         save_checkpoint({
             'epoch': epoch + 1,
             'arch': args.pre,
             'state_dict': model.state_dict(),
             'best_prec1': best_prec1,
             'optimizer' : optimizer.state_dict(),
-        }, is_best)
+        }, is_best,args.task)
 
 def train(train_list, model, criterion, optimizer, epoch):
     
@@ -176,7 +181,7 @@ def validate(val_list, model, criterion):
         img = Variable(img)
         output = model(img)
         
-        mae += abs(output.data.sum()-target.sum())
+        mae += abs(output.data.sum()-target.sum().cuda())
         
     mae = mae/len(test_loader)    
     print(' * MAE {mae:.3f} '
