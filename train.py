@@ -138,7 +138,7 @@ def train(train_list, model, criterion, optimizer, epoch):
         
         
         
-        target = target.unsqueeze(0).cuda()
+        target = target.type(torch.FloatTensor).unsqueeze(0).cuda()
         target = Variable(target)
         
         
@@ -181,7 +181,7 @@ def validate(val_list, model, criterion):
         img = Variable(img)
         output = model(img)
         
-        mae += abs(output.data.sum()-target.sum().type(torch.DoubleTensor).cuda())
+        mae += abs(output.data.sum()-target.sum().type(torch.FloatTensor).cuda())
         
     mae = mae/len(test_loader)    
     print(' * MAE {mae:.3f} '
