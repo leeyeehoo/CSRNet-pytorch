@@ -26,8 +26,8 @@ Try `python train.py train.json val.json 0 0` to start training process.
 Follow the `val.ipynb` to try the validation. You can try to modify the notebook and see the output of each image.
 ## Results
 
-ShanghaiA MAE: 66.4
-ShanghaiB MAE: 10.6
+ShanghaiA MAE: 66.4 [Google Drive](https://drive.google.com/open?id=1Z-atzS5Y2pOd-nEWqZRVBDMYJDreGWHH)
+ShanghaiB MAE: 10.6 [Google Drive](https://drive.google.com/open?id=1zKn6YlLW3Z9ocgPbP99oz7r2nC7_TBXK)
 
 ## References
 
